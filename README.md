@@ -26,3 +26,10 @@ $ npx pipeline-project-tool
 ## Display version
 -V|--version
 ```
+
+# Output
+- CodeCommit repository
+- CodePipeline (using cdk pipelines)
+  - Stag stage
+  - Prod stage (with manual approval step)
+  - Deploys skeleton lambda stack with scheduled expresion
