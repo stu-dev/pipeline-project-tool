@@ -1,8 +1,8 @@
 {
   "name": "pipeline-project-tool",
   "description": "Scaffold opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda stack",
-  "version": "0.0.0",
-  "author": "Stuart Gray @stu-dev",
+  "version": "0.0.1",
+  "author": "@stu-dev",
   "bin": {
     "new-pipeline-project": "./bin/run"
   },
