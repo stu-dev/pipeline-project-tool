@@ -8,15 +8,14 @@ Scaffold opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda s
 [![Downloads/week](https://img.shields.io/npm/dw/pipeline-project-tool.svg)](https://npmjs.org/package/pipeline-project-tool)
 [![License](https://img.shields.io/npm/l/pipeline-project-tool.svg)](https://github.com/stu-dev/pipeline-project-tool/blob/master/package.json)
 # Usage
-<!-- usage -->
 ```sh-session
 # Install as global package
-npm install -g pipeline-project-tool
-new-pipeline-project
+$ npm install -g pipeline-project-tool
+$ new-pipeline-project
 
 OR
 
-npx new-pipeline-project
+$ npx new-pipeline-project
 ```
 ```sh-session
 # Available options
