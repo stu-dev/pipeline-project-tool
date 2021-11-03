@@ -49,9 +49,10 @@ const AWS_REGIONS = [
 
 class PipelineProjectTool extends Command {
   static description =
-    'Scaffold opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda stack';
+    'Scaffold and deploy opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda stack';
 
   static flags = {
+    help: flags.help({char: 'h'}),
     version: flags.version({char: 'V'}),
     verbose: flags.boolean({char: 'v', description: 'Print logs'}),
   };

@@ -1,7 +1,7 @@
 pipeline-project-tool
 =====================
 
-Scaffold opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda stack
+Scaffold and deploy opinionated AWS CodeCommit repository + AWS CDK pipeline + AWS Lambda stack
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/pipeline-project-tool.svg)](https://npmjs.org/package/pipeline-project-tool)
