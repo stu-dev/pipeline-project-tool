@@ -15,7 +15,7 @@ $ new-pipeline-project
 
 OR
 
-$ npx new-pipeline-project
+$ npx pipeline-project-tool
 ```
 ```sh-session
 # Available options
