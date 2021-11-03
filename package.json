@@ -52,7 +52,7 @@
   "repository": "stu-dev/pipeline-project-tool",
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b",
+    "prepack": "rm -rf lib && tsc -b && cp -r src/templates lib/templates",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "upgrade-interactive": "npx npm-check --update",
     "version": "oclif-dev readme && git add README.md"
