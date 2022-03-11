@@ -18,7 +18,7 @@ import chalk from 'chalk';
 import ora, {Ora} from 'ora';
 import path from 'path';
 import {GetCallerIdentityCommand, STSClient} from '@aws-sdk/client-sts';
-import execa from 'execa';
+import {execaCommand} from 'execa';
 import Handlebars from 'handlebars';
 
 const greenBold = chalk.bold.greenBright;
@@ -159,25 +159,6 @@ class PipelineProjectTool extends Command {
 
     // Start pipeline code changes
     await spinnerWrap('Creating cdk pipeline code changes', async () => {
-      // Modify cdk.json
-      const cdkJson = await readFile(path.resolve('cdk.json'), 'utf-8');
-      const parsedCdkJson = JSON.parse(cdkJson);
-      await writeFile(
-        path.resolve('cdk.json'),
-        JSON.stringify(
-          {
-            ...parsedCdkJson,
-            context: {
-              ...parsedCdkJson.context,
-              '@aws-cdk/core:newStyleStackSynthesis': true,
-            },
-          },
-          null,
-          2,
-        ),
-        'utf-8',
-      );
-
       // Overwrite cdk bin
       await compileAndWriteFile({
         templatePath: path.join(__dirname, 'templates', 'bin', 'pipeline.ts'),
@@ -224,19 +205,7 @@ class PipelineProjectTool extends Command {
     });
 
     // Install deps
-    await spinnerWrap('Installing missing dependencies', async spinner => {
-      // Extract cdk version from package.json
-      const packageJson = await readFile(path.resolve('package.json'), 'utf-8');
-      const parsedPackageJson = JSON.parse(packageJson);
-      const cdkVersion = parsedPackageJson.dependencies['@aws-cdk/core'];
-
-      // Installing missing cdk packages
-      await exec({
-        command: `npm install --save --save-exact @aws-cdk/aws-lambda-nodejs@${cdkVersion} @aws-cdk/aws-events@${cdkVersion} @aws-cdk/aws-events-targets@${cdkVersion} @aws-cdk/pipelines@${cdkVersion} @aws-cdk/aws-codecommit@${cdkVersion}`,
-        verbose: flags.verbose,
-        logger: this.log,
-      });
-      spinner.text = 'Installing missing devDependencies';
+    await spinnerWrap('Installing missing devDependencies', async () => {
       await exec({
         command: 'npm install --save-dev esbuild@0 @types/aws-lambda',
         verbose: flags.verbose,
@@ -301,42 +270,22 @@ class PipelineProjectTool extends Command {
       );
     }
 
-    // Bootstrap region
-    if (bootstrapping_required) {
-      await spinnerWrap(`Bootstrapping ${project_region} region`, () =>
-        exec({
-          command: `env CDK_NEW_BOOTSTRAP=1 npx cdk bootstrap \
-          --profile ${profile_name} \
-          --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess \
-          aws://${account_id}/${project_region}`,
-          verbose: flags.verbose,
-          logger: this.log,
-        }),
-      );
-    }
+    this.log('--- Final manual steps required: ---');
+    this.log(`cd ${project_name}`);
 
     // Deploy pipeline
-    if (git_protocol !== 'https://') {
-      await spinnerWrap('Deploying pipeline!', () =>
-        exec({
-          command: `npx cdk deploy PipelineStack \
-          --profile ${profile_name} \
-          --require-approval=never`,
-          verbose: flags.verbose,
-          logger: this.log,
-        }),
-      );
-      this.log(
-        `CodePipeline URL: https://${project_region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${project_name}/view`,
-      );
-    } else {
-      this.log('--- Final manual steps required: ---');
-      this.log(`cd ${project_name}`);
+    if (git_protocol === 'https://') {
       this.log('git push');
-      this.log(
-        `npx cdk deploy PipelineStack --profile ${profile_name} --require-approval=never`,
-      );
     }
+
+    if (bootstrapping_required) {
+      this.log(`npx cdk bootstrap \
+      --profile ${profile_name} \
+      --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess \
+      aws://${account_id}/${project_region}`);
+    }
+
+    this.log(`npx cdk deploy PipelineStack --profile ${profile_name}`);
   }
 }
 
@@ -360,7 +309,7 @@ const exec = async ({
   logger: Command['log'];
   verbose?: boolean;
 }) => {
-  const {stdout, stderr} = await execa.command(
+  const {stdout, stderr} = await execaCommand(
     command,
     shell
       ? {

@@ -1,10 +1,13 @@
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda-nodejs';
-import * as events from '@aws-cdk/aws-events';
-import * as targets from '@aws-cdk/aws-events-targets';
+import * as cdk from 'aws-cdk-lib';
+import {Construct} from 'constructs';
+import {
+  aws_lambda_nodejs as lambda,
+  aws_events as events,
+  aws_events_targets as targets,
+} from 'aws-cdk-lib';
 
 export class ScheduledLambdaStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const lambdaFn = new lambda.NodejsFunction(this, 'lambda');

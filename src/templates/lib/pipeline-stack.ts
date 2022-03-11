@@ -1,10 +1,10 @@
-import {Construct, Stack, StackProps, Stage, StageProps} from '@aws-cdk/core';
-import * as pipelines from '@aws-cdk/pipelines';
-import * as codecommit from '@aws-cdk/aws-codecommit';
+import * as cdk from 'aws-cdk-lib';
+import {Construct} from 'constructs';
+import {pipelines, aws_codecommit as codecommit} from 'aws-cdk-lib';
 import {ScheduledLambdaStack} from './scheduled-lambda-stack';
 
-export default class PipelineStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+export class PipelineStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const repository = codecommit.Repository.fromRepositoryName(
@@ -44,8 +44,8 @@ export default class PipelineStack extends Stack {
   }
 }
 
-class ApplicationStage extends Stage {
-  constructor(scope: Construct, id: string, props?: StageProps) {
+class ApplicationStage extends cdk.Stage {
+  constructor(scope: Construct, id: string, props?: cdk.StageProps) {
     super(scope, id, props);
 
     new ScheduledLambdaStack(this, 'ScheduledLambdaStack', {
